@@ -8,6 +8,7 @@
     "file-ez": "^1.0.0",
     "fs": "^0.0.1-security",
     "mongodb": "^4.5.0",
-    "paimon.js": "^1.0.5"
+    "paimon.js": "^1.0.5",
+    "zx": "^6.1.0"
   }
 }

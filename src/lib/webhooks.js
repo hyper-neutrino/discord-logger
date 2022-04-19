@@ -1,9 +1,12 @@
 import { is_string } from "paimon.js";
 import db from "../db.js";
+import { get_log_channel } from "./channels.js";
 
 await db.init("webhooks");
 
 export async function get_webhook(channel) {
+    if (!channel) return undefined;
+
     const entry = await db.webhooks.findOne({ channel: channel.id });
     let hook;
 
@@ -25,16 +28,24 @@ export async function get_webhook(channel) {
     return hook;
 }
 
-export async function wsend(member_or_user, channel, options) {
+export async function wsend(member_or_user, guild, type, options) {
+    if (!guild) return;
+
+    const channel = await get_log_channel(guild, type);
     if (!channel) return;
 
     const hook = await get_webhook(channel);
+    if (!hook) return;
 
     if (is_string(options)) options = { content: options };
 
     return await hook.send({
-        username: (member_or_user.user ?? member_or_user).tag,
-        avatarURL: member_or_user.displayAvatarURL({ dynamic: true }),
+        username:
+            (member_or_user?.user ?? member_or_user)?.tag ?? "Unknown User",
+        avatarURL: member_or_user
+            ? member_or_user.displayAvatarURL({ dynamic: true })
+            : undefined,
+        allowedMentions: { parse: [] },
         ...options,
     });
 }
