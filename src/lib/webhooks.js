@@ -7,6 +7,8 @@ await db.init("webhooks");
 export async function get_webhook(channel) {
     if (!channel) return undefined;
 
+    if (channel.send && !channel.permissionOverwrites) channel = channel.parent;
+
     const entry = await db.webhooks.findOne({ channel: channel.id });
     let hook;
 
@@ -47,5 +49,9 @@ export async function wsend(member_or_user, guild, type, options) {
             : undefined,
         allowedMentions: { parse: [] },
         ...options,
+        threadId:
+            channel.send && !channel.permissionOverwrites
+                ? channel.id
+                : undefined,
     });
 }
