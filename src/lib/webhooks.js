@@ -43,7 +43,7 @@ export async function wsend(member_or_user, guild, type, options) {
 
     return await hook.send({
         username:
-            (member_or_user?.user ?? member_or_user)?.tag ?? "Unknown User",
+            (member_or_user?.user ?? member_or_user)?.username ?? "Unknown User",
         avatarURL: member_or_user
             ? member_or_user.displayAvatarURL({ dynamic: true })
             : undefined,
